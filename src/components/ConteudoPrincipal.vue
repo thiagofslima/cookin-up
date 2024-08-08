@@ -2,21 +2,27 @@
 import SelecionarIngredientes from './SelecionarIngredientes.vue';
 import Tag from './Tag.vue';
 import SuaLista from "@/components/SuaLista.vue";
-import BotaoPrincipal from "@/components/BotaoPrincipal.vue";
+import MostrarReceitas from "@/components/MostrarReceitas.vue";
+
+type Pagina = 'SelecionarIngredientes' | 'MostrarReceitas';
 
 export default {
   data() {
     return {
-      ingredientes: [] as string[]
+      ingredientes: [] as string[],
+      conteudo: 'SelecionarIngredientes' as Pagina
     }
   },
-  components: {BotaoPrincipal, SuaLista, SelecionarIngredientes, Tag },
+  components: {MostrarReceitas, SuaLista, SelecionarIngredientes, Tag },
   methods: {
     adicionarIngrediente(ingrediente: string) {
       this.ingredientes.push(ingrediente);
     },
     removerIngrediente(ingrediente: string) {
       this.ingredientes = this.ingredientes.filter(i => i !== ingrediente);
+    },
+    navegar(pagina: Pagina) {
+      this.conteudo = pagina;
     }
   }
 }
@@ -26,9 +32,15 @@ export default {
   <main class="conteudo-principal">
     <SuaLista :ingredientes="ingredientes" />
 
-    <SelecionarIngredientes @adicionar-ingrediente="adicionarIngrediente" @remover-ingrediente="removerIngrediente" />
+    <SelecionarIngredientes v-if="conteudo === 'SelecionarIngredientes'"
+        @adicionar-ingrediente="adicionarIngrediente"
+        @remover-ingrediente="removerIngrediente"
+        @buscar-receitas="navegar('MostrarReceitas')"
+    />
 
-    <BotaoPrincipal :texto="'Buscar receiftas!'"/>
+    <MostrarReceitas v-else-if="conteudo === 'MostrarReceitas'" />
+
+
   </main>
 </template>
 
